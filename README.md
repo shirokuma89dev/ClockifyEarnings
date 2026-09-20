@@ -6,7 +6,7 @@
 
 <p align="center">macOS 13以降 / Apple Silicon。SwiftUI MenuBarExtraで、Clockifyの実行中の作業の金額と経過時間を毎秒表示します。</p>
 
-<p align="center"><sub>Clockifyの非公式ツールです。Clockify社との提携・承認関係はありません。</sub></p>
+<p align="center"><sub>Clockifyの非公式ツールです。</sub></p>
 
 <p align="center">
   <img src="docs/screenshot.png" alt="メニューバーのポップアップ表示" width="480">
