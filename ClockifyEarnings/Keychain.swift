@@ -34,3 +34,18 @@ enum Keychain {
             "Keychainを利用できません（\(status)）。Macのロックを解除し、アクセスを許可してください。"])
     }
 }
+
+// Credentials remain only in process memory; persistent storage stays in Keychain.
+final class SessionCredential {
+    private var value: String?
+    func read(using load: () throws -> String?) throws -> String {
+        if let value { return value }
+        guard let loaded = try load(), !loaded.isEmpty else {
+            throw Keychain.failure(errSecItemNotFound)
+        }
+        value = loaded
+        return loaded
+    }
+    func replace(with key: String) { value = key }
+    func clear() { value = nil }
+}

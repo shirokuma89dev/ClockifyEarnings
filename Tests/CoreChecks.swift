@@ -2,6 +2,19 @@ import Foundation
 
 @main struct CoreChecks {
     @MainActor static func main() throws {
+        let credential = SessionCredential()
+        var reads = 0
+        let loader: () throws -> String? = { reads += 1; return "test-only-key" }
+        _ = try credential.read(using: loader)
+        _ = try credential.read(using: loader)
+        precondition(reads == 1)
+        credential.replace(with: "replacement")
+        let replacement = try credential.read(using: loader)
+        precondition(replacement == "replacement" && reads == 1)
+        credential.clear()
+        _ = try credential.read(using: loader)
+        precondition(reads == 2)
+        print("PASS: credentials are read once, replaced after save, cleared on disconnect")
         let data = Data("""
         {"id":"sample","description":"Test","billable":true,"type":"REGULAR",
          "timeInterval":{"start":"2026-09-19T00:00:00Z","end":null},

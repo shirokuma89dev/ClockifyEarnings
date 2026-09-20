@@ -13,6 +13,9 @@ import Combine
     private var timer: AnyCancellable?
     private var nextPoll = Date.distantPast
     private var generation = 0
+    private let credential = SessionCredential()
+    private var rateLimitedUntil = Date.distantPast
+    var canRefresh: Bool { configured && !busy && now >= rateLimitedUntil }
     init() {
         preferences = UserDefaults.standard.data(forKey: "preferences").flatMap { try? JSONDecoder().decode(Preferences.self, from: $0) } ?? Preferences()
         timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect().sink { [weak self] date in
@@ -41,30 +44,43 @@ import Combine
     }
     func save(_ settings: Preferences, key: String) throws {
         try Keychain.save(key)
+        credential.replace(with: key)
         generation += 1
         preferences = settings
         UserDefaults.standard.set(try JSONEncoder().encode(settings), forKey: "preferences")
         running = nil; lastSync = nil; error = nil; nextPoll = .distantPast
         Task { await refresh() }
     }
+    func savePreferences(_ settings: Preferences) throws {
+        // Display preferences do not change credentials or trigger another API call.
+        var updated = preferences
+        updated.fixedRate = settings.fixedRate
+        updated.automaticRate = settings.automaticRate
+        updated.billableOnly = settings.billableOnly
+        updated.interval = settings.interval
+        let data = try JSONEncoder().encode(updated)
+        preferences = updated
+        UserDefaults.standard.set(data, forKey: "preferences")
+    }
     func disconnect() {
         do {
             try Keychain.delete()
+            credential.clear()
             generation += 1
             preferences = Preferences()
             UserDefaults.standard.removeObject(forKey: "preferences")
             running = nil; lastSync = nil; error = nil
         } catch { self.error = error.localizedDescription }
     }
-    func refresh() async {
-        guard configured, !busy, Date() >= nextPoll else { return }
+    func refresh(force: Bool = false) async {
+        guard configured, !busy, Date() >= rateLimitedUntil, force || Date() >= nextPoll else { return }
         busy = true
         let revision = generation
         let settings = preferences
         defer { busy = false }
         nextPoll = Date().addingTimeInterval(settings.interval)
         do {
-            guard let key = try Keychain.read(), !key.isEmpty else { throw Keychain.failure(errSecItemNotFound) }
+            let key = try credential.read(using: Keychain.read)
             let entries: [Entry] = try await API(key: key, base: settings.region).get(
                 "/workspaces/\(settings.workspaceID)/user/\(settings.userID)/time-entries",
                 query: [.init(name: "in-progress", value: "true"), .init(name: "hydrated", value: "true"), .init(name: "page-size", value: "50")])
@@ -74,8 +90,15 @@ import Combine
         } catch {
             guard revision == generation else { return }
             self.error = error.localizedDescription
+            if (error as NSError).domain == "Keychain" {
+                // Retry only after the user presses refresh or updates credentials.
+                self.error = error.localizedDescription + " 再試行するには更新ボタンを押してください。"
+                nextPoll = .distantFuture
+                return
+            }
             let delay = (error as? APIError)?.status == 429 ? 3600 : max(settings.interval, 60)
             nextPoll = Date().addingTimeInterval(delay)
+            if (error as? APIError)?.status == 429 { rateLimitedUntil = nextPoll }
         }
     }
 }
