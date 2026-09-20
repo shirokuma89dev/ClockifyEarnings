@@ -1,10 +1,12 @@
 <p align="center">
-  <img src="docs/app-icon.png" width="128" height="128" alt="Clockify Earnings icon">
+  <img src="docs/app-icon.png" width="128" height="128" alt="EarnBear icon">
 </p>
 
-<h1 align="center">Clockify Earnings</h1>
+<h1 align="center">EarnBear</h1>
 
 <p align="center">macOS 13以降 / Apple Silicon。SwiftUI MenuBarExtraで、Clockifyの実行中の作業の金額と経過時間を毎秒表示します。</p>
+
+<p align="center"><sub>Clockifyの非公式ツールです。Clockify社との提携・承認関係はありません。</sub></p>
 
 <p align="center">
   <img src="docs/screenshot.png" alt="メニューバーのポップアップ表示" width="480">
@@ -12,7 +14,7 @@
 
 ## 起動・設定
 
-1. Xcodeで`ClockifyEarnings.xcodeproj`を開き、ClockifyEarningsスキーム / My MacでRunします。
+1. Xcodeで`EarnBear.xcodeproj`を開き、EarnBearスキーム / My MacでRunします。
 2. メニューバーの「¥ — 設定」を押し「設定…」を開きます。
 3. Clockifyのユーザー設定で取得したAPIキーを入力します。「接続を確認」を押し、対象Workspaceを選んで「このWorkspaceで開始」を押します。
 4. 固定時給を確認し「設定を保存」を押します。APIキーをチャットに送る必要はありません。

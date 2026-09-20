@@ -2,14 +2,14 @@ import SwiftUI
 import AppKit
 import ServiceManagement
 
-@main struct ClockifyEarningsApp: App {
+@main struct EarnBearApp: App {
     @StateObject private var store = Store()
     var body: some Scene {
         MenuBarExtra { Panel(store: store) } label: {
             Image(nsImage: MenuBarReadout.image(for: store.title))
                 .accessibilityLabel(store.title)
         }.menuBarExtraStyle(.window)
-        Window("Clockify Earnings 設定", id: "settings") {
+        Window("EarnBear 設定", id: "settings") {
             SettingsView(store: store).frame(width: 520)
         }.windowResizability(.contentSize)
     }
@@ -225,7 +225,7 @@ struct SettingsView: View {
     @StateObject private var form = SettingsForm()
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Clockify Earnings").font(.title.bold())
+            Text("EarnBear").font(.title.bold())
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     if form.connected {

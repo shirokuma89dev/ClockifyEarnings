@@ -3,7 +3,7 @@ import Security
 
 enum Keychain {
     static let base: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
-        kSecAttrService as String: "local.ClockifyEarnings", kSecAttrAccount as String: "api-key"]
+        kSecAttrService as String: "local.EarnBear", kSecAttrAccount as String: "api-key"]
     static func read() throws -> String? {
         var query = base
         query[kSecReturnData as String] = true
