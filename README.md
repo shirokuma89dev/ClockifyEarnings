@@ -1,6 +1,14 @@
-# Clockify Earnings
+<p align="center">
+  <img src="docs/app-icon.png" width="128" height="128" alt="Clockify Earnings icon">
+</p>
 
-macOS 13以降 / Apple Silicon。SwiftUI MenuBarExtraで、Clockifyの実行中の作業の金額と経過時間を毎秒表示します。
+<h1 align="center">Clockify Earnings</h1>
+
+<p align="center">macOS 13以降 / Apple Silicon。SwiftUI MenuBarExtraで、Clockifyの実行中の作業の金額と経過時間を毎秒表示します。</p>
+
+<p align="center">
+  <img src="docs/screenshot.png" alt="メニューバーのポップアップ表示" width="480">
+</p>
 
 ## 起動・設定
 
