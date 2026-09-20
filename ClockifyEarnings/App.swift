@@ -48,10 +48,10 @@ struct Panel: View {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 5) {
                     Text(store.configured ? (store.stale ? "≈" : "") + store.money : "HELLO!")
-                        .font(.system(size: 32, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 36, weight: .semibold, design: .monospaced))
                         .lineLimit(1).minimumScaleFactor(0.5)
                     Text(store.running != nil ? store.elapsed : "--:--:--")
-                        .font(.system(size: 17, design: .monospaced)).monospacedDigit()
+                        .font(.system(size: 20, design: .monospaced)).monospacedDigit()
                         .lineLimit(1).minimumScaleFactor(0.75)
                         .foregroundStyle(ink.opacity(0.65))
                 }.frame(maxWidth: .infinity, alignment: .leading)
